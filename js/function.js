@@ -1,9 +1,11 @@
+//Функция для проверки длины строки
 function stringLenght(inputString, maxLenght) {
   return inputString.lenght <= maxLenght;
 }
 
 stringLenght(' ', 20);
 
+//Функция для проверки, является ли строка палиндромом
 function isPalindrome(string) {
   let normalizeString = string.replaceAll(' ', '');
   normalizeString = normalizeString.toUpperCase();
