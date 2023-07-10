@@ -32,12 +32,12 @@ const DESCRIPTION = [
 
 //массив сообщений в комментариях
 const MESSAGE = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
+  'Всё отлично! ',
+  'В целом всё неплохо. Но не всё. ',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально. ',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше. ',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше. ',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?! ',
 ];
 
 //массив имён
@@ -88,14 +88,14 @@ function getRandomInteger (minNumber, maxNumber) {
 function IdGeneratorFromRange (minNumber, maxNumber) {
   const previousValues = [];
 
-  return function () {
-    let currentValue = getRandomInteger(minNumber, maxNumber);
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomInteger(minNumber, maxNumber);
-    }
-    previousValues.push(currentValue);
-    return currentValue;
-  };
+  let currentValue = getRandomInteger(minNumber, maxNumber);
+
+  while (previousValues.includes(currentValue)) {
+    currentValue = getRandomInteger(minNumber, maxNumber);
+  }
+  previousValues.push(currentValue);
+
+  return currentValue;
 }
 
 //создатель комментария
@@ -118,4 +118,4 @@ const createPhotoDescription = () => ({
 //создание массива из объектов - опубликованных фотографий
 const similarPhotos = Array.from({length: PHOTOS_NUMBER}, createPhotoDescription);
 
-similarPhotos();
+console.log(similarPhotos);
