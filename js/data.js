@@ -83,9 +83,9 @@ const createPhotoDescription = () => ({
 });
 
 //создание массива из объектов - опубликованных фотографий
-const similarPhotos = () => {
-  Array.from({length: PHOTOS_NUMBER}, createPhotoDescription);
+const createSimilarPhotos = () => {
+  const similarPhotos = Array.from({length: PHOTOS_NUMBER}, createPhotoDescription);
   return similarPhotos;
 };
 
-export {similarPhotos};
+export {createSimilarPhotos};
