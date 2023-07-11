@@ -52,16 +52,17 @@ const NAME = [
   'Максим',
 ];
 
+//генератор случайного числа в диапазоне
+function getRandomInteger (minNumber, maxNumber) {
+  const lower = Math.ceil(Math.min(Math.abs(minNumber), Math.abs(maxNumber)));
+  const upper = Math.floor(Math.max(Math.abs(minNumber), Math.abs(maxNumber)));
+  const result = Math.random() * (upper - lower + 1) + lower;
+
+  return Math.floor(result);
+}
+
 //функция получения рандомного элемента из массива
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
-
-//конструктор комментария
-const messageBuilder = () => {
-  if (getRandomInteger(1,2) === 2) {
-    return getRandomArrayElement(MESSAGE) + getRandomArrayElement(MESSAGE);
-  }
-  return getRandomArrayElement(MESSAGE);
-};
 
 //генератор id по порядку чисел
 const createIdGenerator = () => {
@@ -71,18 +72,6 @@ const createIdGenerator = () => {
     return lastGeneratedId;
   };
 };
-
-const generatePhotoId = createIdGenerator();
-const generatePhotoName = createIdGenerator();
-
-//генератор случайного числа в диапазоне
-function getRandomInteger (minNumber, maxNumber) {
-  const lower = Math.ceil(Math.min(Math.abs(minNumber), Math.abs(maxNumber)));
-  const upper = Math.floor(Math.max(Math.abs(minNumber), Math.abs(maxNumber)));
-  const result = Math.random() * (upper - lower + 1) + lower;
-
-  return Math.floor(result);
-}
 
 //генератор id из диапазона
 function IdGeneratorFromRange (minNumber, maxNumber) {
@@ -98,13 +87,24 @@ function IdGeneratorFromRange (minNumber, maxNumber) {
   return currentValue;
 }
 
-//создатель комментария
+//конструктор текстового содержимого комментария
+const messageBuilder = () => {
+  if (getRandomInteger(1,2) === 2) {
+    return getRandomArrayElement(MESSAGE) + getRandomArrayElement(MESSAGE);
+  }
+  return getRandomArrayElement(MESSAGE);
+};
+
+//создатель комментария как объекта
 const createComment = () => ({
   id: IdGeneratorFromRange(1, 5000),
   avatar: `img/avatar-${getRandomInteger(1,6)}.svg`,
   message: messageBuilder(),
   name:  getRandomArrayElement(NAME),
 });
+
+const generatePhotoId = createIdGenerator();
+const generatePhotoName = createIdGenerator();
 
 //генератор объектa фотографии
 const createPhotoDescription = () => ({
