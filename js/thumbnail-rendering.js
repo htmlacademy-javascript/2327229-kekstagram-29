@@ -1,9 +1,11 @@
-//отрисовка миниатюр
+import {addClickOpenHandler} from './full-image.js';
+
 const thumbnailTemplate = document.querySelector('#picture').content;
 const newItemThumbnail = thumbnailTemplate.querySelector('.picture');
 
 const thumbnailList = document.querySelector('.pictures');
 
+//получение информации о миниатюре
 function getThumbnail({ url, description, likes, comments }) {
   const thumbnail = newItemThumbnail.cloneNode(true);
 
@@ -15,11 +17,13 @@ function getThumbnail({ url, description, likes, comments }) {
   return thumbnail;
 }
 
+//отрисовка миниатюры
 function thumbnailRendering(photos) {
   const fragment = document.createDocumentFragment();
   photos.forEach((photo) => {
     const thumbnail = getThumbnail(photo);
     fragment.append(thumbnail);
+    addClickOpenHandler(thumbnail, photo.comments); //обработчик клика по миниатюре из другого модуля
   });
   thumbnailList.append(fragment);
 }
