@@ -2,6 +2,14 @@ import {removeClass, addClass, getImageAboutThumbnail, getCountLikesAboutThumbna
   getDescriptionAboutThumbnail, isEscapeKey} from './util.js';
 
 const commentsList = document.querySelector('.social__comments');
+const countShowedComments = document.querySelector('.count-showed-comments'); //место где отображается колличество отображенных комментариев
+const buttonClose = document.querySelector('.big-picture__cancel');
+const COUNT_COMMENTS_DEFAULT = 5;
+
+function getCommentsLoader(){
+  return document.querySelector('.comments-loader');
+}
+
 
 function onDocumentKeydown(evt) {
   if (isEscapeKey(evt)) {
@@ -15,8 +23,6 @@ function addClickOpenHandler(item, comments) {
   item.addEventListener('click', () => {
     removeClass('.big-picture', 'hidden');
     addClass('body', 'modal-open');
-    addClass('.social__comment-count', 'hidden');
-    addClass('.comments-loader', 'hidden');
     builderBigPictures(item, comments);
 
     document.addEventListener('keydown', onDocumentKeydown);
@@ -29,27 +35,96 @@ function addClickCloseHandler() {
   removeClass('body', 'modal-open');
   commentsList.innerHTML = '';
 
+  const commentsLoader = deleteHendlers();
+  commentsList.after(commentsLoader);
+
   document.removeEventListener('keydown', onDocumentKeydown);
+}
+
+function deleteHendlers(){
+  const commentsLoader = getCommentsLoader();
+
+  const newCommentsLoader = commentsLoader.cloneNode(true);
+  commentsLoader.remove();
+  return newCommentsLoader;
 }
 
 //конструктор полноразмерного окна фотографии
 function builderBigPictures(item, comments){
+  //let indexElementArrayComments = 0;
+
   const bigPicturesImage = document.querySelector('.big-picture__img');
   bigPicturesImage.querySelector('img').src = getImageAboutThumbnail(item);
 
   const bigPicturesLikes = document.querySelector('.likes-count');
   bigPicturesLikes.textContent = getCountLikesAboutThumbnail(item);
 
-  const bigPicturesComments = document.querySelector('.comments-count');
-  bigPicturesComments.textContent = getCountCommentsAboutThumbnail(item);
-
   const bigPicturesDescription = document.querySelector('.social__caption');
   bigPicturesDescription.textContent = getDescriptionAboutThumbnail(item);
 
-  createCommentsList(comments);
+  const bigPicturesComments = document.querySelector('.comments-count');
+  const countComments = getCountCommentsAboutThumbnail(item);
+  bigPicturesComments.textContent = countComments;
+  //если количество комментариев меньше 5, то выводится иx количество, иначе 5
+  //условие отрабатывает отображение тех комментариев, которые видны при открытии поста
+  if(countComments <= COUNT_COMMENTS_DEFAULT) {
+    countShowedComments.textContent = countComments;
+    for(let i = 0; i < countComments; i++){
+      renderComments(createComment(comments[i]));
+    }
+  } else {
+    countShowedComments.textContent = COUNT_COMMENTS_DEFAULT;
+    for(let i = 0; i < COUNT_COMMENTS_DEFAULT; i++){
+      renderComments(createComment(comments[i]));
+    }
+  }
 
-  const buttonClose = document.querySelector('.big-picture__cancel');
+  //обработка клика по кнопке "загрузить ещё"
+  const commentsLoader = getCommentsLoader();
+  const loadingComments = () => clickLoadCommentHandler(comments);
+  commentsLoader.addEventListener('click', loadingComments);
+
+
+  //обработка клика закрытия полноразмерного окна
   buttonClose.addEventListener('click', addClickCloseHandler);
+}
+
+//функция загрузки ещё комментариев
+function clickLoadCommentHandler(comments){
+  const commentsLength = comments.length;
+  let indexElementArrayComments = 0;
+
+  const displayedComments = document.querySelector('.count-showed-comments').textContent;
+
+  if(commentsLength >= Number(displayedComments)){ //нужно вместо этой константы поставить число, которое уже отображено
+    indexElementArrayComments = Number(displayedComments) - 1;
+  } else {
+    indexElementArrayComments = commentsLength;
+  }
+
+  if((indexElementArrayComments + 1) === commentsLength || commentsLength <= 5) {
+    //
+  } else {
+
+    if(indexElementArrayComments + 1 < commentsLength && commentsLength - indexElementArrayComments - 1 <= COUNT_COMMENTS_DEFAULT){
+      //если еще не весь список отображен и колличество неотображенных комментариев меньше или = 5, то
+      for(let i = indexElementArrayComments + 1; i < commentsLength; i++){
+        renderComments(createComment(comments[i]));
+      }
+      countShowedComments.textContent = commentsLength;
+
+      indexElementArrayComments = commentsLength;
+    }
+
+    if(indexElementArrayComments + 1 < commentsLength && commentsLength - indexElementArrayComments - 1 > COUNT_COMMENTS_DEFAULT){
+      //если еще не весь список отображен и колличество неотображенных комментариев больше 5, то
+      for(let i = indexElementArrayComments + 1; i <= indexElementArrayComments + COUNT_COMMENTS_DEFAULT; i++){
+        renderComments(createComment(comments[i]));
+      }
+      indexElementArrayComments += 5;
+      countShowedComments.textContent = Number(countShowedComments.textContent) + COUNT_COMMENTS_DEFAULT;
+    }
+  }
 }
 
 //создание элемента-комментария к фотографии
@@ -63,12 +138,12 @@ function createComment(comment) {
 }
 
 //функция создания списка комментариев для фото
-function createCommentsList(arrayComments) {
+/*function createCommentsList(arrayComments) {
   arrayComments.forEach((comment) => {
     const newComment = createComment(comment);
     renderComments(newComment);
   });
-}
+}*/
 
 //функция по отображению комментария
 function renderComments(comment) {
