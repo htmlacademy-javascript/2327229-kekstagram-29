@@ -2,7 +2,7 @@ import {removeClass, addClass, getImageAboutThumbnail, getCountLikesAboutThumbna
   getDescriptionAboutThumbnail, isEscapeKey} from './util.js';
 
 const commentsList = document.querySelector('.social__comments');
-const countShowedComments = document.querySelector('.count-showed-comments'); //место где отображается колличество отображенных комментариев
+const countShowedComments = document.querySelector('.count-showed-comments'); //место где отображается количество отображенных комментариев
 const buttonClose = document.querySelector('.big-picture__cancel');
 const COUNT_COMMENTS_DEFAULT = 5;
 
@@ -37,6 +37,7 @@ function addClickCloseHandler() {
 
   const commentsLoader = deleteHendlers();
   commentsList.after(commentsLoader);
+  commentsLoader.classList.remove('hidden');
 
   document.removeEventListener('keydown', onDocumentKeydown);
 }
@@ -51,8 +52,6 @@ function deleteHendlers(){
 
 //конструктор полноразмерного окна фотографии
 function builderBigPictures(item, comments){
-  //let indexElementArrayComments = 0;
-
   const bigPicturesImage = document.querySelector('.big-picture__img');
   bigPicturesImage.querySelector('img').src = getImageAboutThumbnail(item);
 
@@ -61,6 +60,11 @@ function builderBigPictures(item, comments){
 
   const bigPicturesDescription = document.querySelector('.social__caption');
   bigPicturesDescription.textContent = getDescriptionAboutThumbnail(item);
+
+  //обработка клика по кнопке "загрузить ещё"
+  const commentsLoader = getCommentsLoader();
+  const loadingComments = () => clickLoadCommentHandler(comments);
+  commentsLoader.addEventListener('click', loadingComments);
 
   const bigPicturesComments = document.querySelector('.comments-count');
   const countComments = getCountCommentsAboutThumbnail(item);
@@ -72,18 +76,13 @@ function builderBigPictures(item, comments){
     for(let i = 0; i < countComments; i++){
       renderComments(createComment(comments[i]));
     }
+    commentsLoader.classList.add('hidden');
   } else {
     countShowedComments.textContent = COUNT_COMMENTS_DEFAULT;
     for(let i = 0; i < COUNT_COMMENTS_DEFAULT; i++){
       renderComments(createComment(comments[i]));
     }
   }
-
-  //обработка клика по кнопке "загрузить ещё"
-  const commentsLoader = getCommentsLoader();
-  const loadingComments = () => clickLoadCommentHandler(comments);
-  commentsLoader.addEventListener('click', loadingComments);
-
 
   //обработка клика закрытия полноразмерного окна
   buttonClose.addEventListener('click', addClickCloseHandler);
@@ -107,17 +106,20 @@ function clickLoadCommentHandler(comments){
   } else {
 
     if(indexElementArrayComments + 1 < commentsLength && commentsLength - indexElementArrayComments - 1 <= COUNT_COMMENTS_DEFAULT){
-      //если еще не весь список отображен и колличество неотображенных комментариев меньше или = 5, то
+      //если еще не весь список отображен и количество неотображенных комментариев меньше или = 5, то
       for(let i = indexElementArrayComments + 1; i < commentsLength; i++){
         renderComments(createComment(comments[i]));
       }
       countShowedComments.textContent = commentsLength;
 
       indexElementArrayComments = commentsLength;
+
+      const commentsLoader = getCommentsLoader();
+      commentsLoader.classList.add('hidden');
     }
 
     if(indexElementArrayComments + 1 < commentsLength && commentsLength - indexElementArrayComments - 1 > COUNT_COMMENTS_DEFAULT){
-      //если еще не весь список отображен и колличество неотображенных комментариев больше 5, то
+      //если еще не весь список отображен и количество неотображенных комментариев больше 5, то
       for(let i = indexElementArrayComments + 1; i <= indexElementArrayComments + COUNT_COMMENTS_DEFAULT; i++){
         renderComments(createComment(comments[i]));
       }
@@ -136,14 +138,6 @@ function createComment(comment) {
   newComment.querySelector('.social__text').textContent = comment.message;
   return newComment;
 }
-
-//функция создания списка комментариев для фото
-/*function createCommentsList(arrayComments) {
-  arrayComments.forEach((comment) => {
-    const newComment = createComment(comment);
-    renderComments(newComment);
-  });
-}*/
 
 //функция по отображению комментария
 function renderComments(comment) {
