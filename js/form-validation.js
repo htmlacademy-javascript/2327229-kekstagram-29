@@ -1,7 +1,6 @@
 const MAX_COUNT_HASHTAG = 5;
 const form = document.querySelector('#upload-select-image');
 const inputHashtags = document.querySelector('.text__hashtags');
-const buttonSubmitNewImage = document.querySelector('.img-upload__submit');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -9,14 +8,8 @@ const pristine = new Pristine(form, {
 });
 
 //проверка формы на валидность
-function checkForm(){
-  const isValid = pristine.validate();
-  if(isValid){
-    buttonSubmitNewImage.removeAttribute('disabled');
-    buttonSubmitNewImage.addEventListener('submit', form.submit()); //добавления обработчика отправки формы
-  } else {
-    buttonSubmitNewImage.setAttribute('disabled', true);
-  }
+function checkForm() {
+  return pristine.validate();
 }
 
 //проверка количества хэштегов
