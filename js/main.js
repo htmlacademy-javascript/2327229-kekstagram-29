@@ -1,6 +1,11 @@
 import {thumbnailRendering} from './thumbnail-rendering.js';
-import {createSimilarPhotos} from './data.js';
+import {getData} from './api.js';
 import {windowNewImageHandlers} from './form-work.js';
 
-thumbnailRendering(createSimilarPhotos());
+
+getData()
+  .then((photos) => {
+    thumbnailRendering(photos);
+  });
+
 windowNewImageHandlers();
