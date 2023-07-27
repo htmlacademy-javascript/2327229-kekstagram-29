@@ -3,6 +3,7 @@ import {getData} from './api.js';
 import {windowNewImageHandlers} from './form-work.js';
 import {setDefaultClick, setRandomClick, setDiscussedClick, openFilterBox} from './filter-photo.js';
 import {debounce} from './util.js';
+import './new-photo.js';
 
 const RERENDER_DELAY = 500;
 
