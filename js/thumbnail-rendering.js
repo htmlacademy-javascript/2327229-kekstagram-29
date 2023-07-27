@@ -1,4 +1,5 @@
 import {addClickOpenHandler} from './full-image.js';
+import {sortedDefault, sortRandom, sortDiscussion} from './sorting.js';
 
 const thumbnailTemplate = document.querySelector('#picture').content;
 const newItemThumbnail = thumbnailTemplate.querySelector('.picture');
@@ -17,10 +18,32 @@ function getThumbnail({ url, description, likes, comments }) {
   return thumbnail;
 }
 
+//отрисовка миниатюр по умолчанию
+function thumbnailRenderingDefault(photos) {
+  thumbnailRendering(sortedDefault(photos));
+}
+
+//отрисовка миниатюр по умолчанию
+function thumbnailRenderingRandom(photos) {
+  thumbnailRendering(sortRandom(photos));
+}
+
+//отрисовка миниатюр по умолчанию
+function thumbnailRenderingDiscussion(photos) {
+  const photosSorting = sortDiscussion(photos);
+  thumbnailRendering(photosSorting);
+}
+
 //отрисовка миниатюры
-function thumbnailRendering(photos) {
+function thumbnailRendering(photosSorting) { //передаем сюда отсортированный массив и его отрисовываем
+  const thumbnailElements = document.querySelector('.pictures');
+  const picElement = thumbnailElements.children;
+  for(let i = (picElement.length - 1); i >= 2; i--){
+    picElement[i].remove();
+  }
+
   const fragment = document.createDocumentFragment();
-  photos.forEach((photo) => {
+  photosSorting.forEach((photo) => {
     const thumbnail = getThumbnail(photo);
     fragment.append(thumbnail);
     addClickOpenHandler(thumbnail, photo.comments); //обработчик клика по миниатюре из другого модуля
@@ -28,4 +51,5 @@ function thumbnailRendering(photos) {
   thumbnailList.append(fragment);
 }
 
-export {thumbnailRendering};
+
+export {thumbnailRenderingDefault, thumbnailRenderingRandom, thumbnailRenderingDiscussion};
