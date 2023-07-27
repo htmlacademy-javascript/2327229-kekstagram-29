@@ -96,5 +96,14 @@ function showAlert(message) {
   }, ALERT_SHOW_TIME);
 }
 
+//устранение дребезга
+function debounce (callback, timeoutDelay) {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
 export {getRandomInteger, getRandomArrayElement, createIdGenerator, IdGeneratorFromRange, removeClass, addClass, getImageAboutThumbnail,
-  getCountLikesAboutThumbnail, getCountCommentsAboutThumbnail,getDescriptionAboutThumbnail,isEscapeKey, showAlert};
+  getCountLikesAboutThumbnail, getCountCommentsAboutThumbnail,getDescriptionAboutThumbnail,isEscapeKey, showAlert, debounce};
