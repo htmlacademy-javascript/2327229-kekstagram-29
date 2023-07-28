@@ -1,4 +1,3 @@
-//модуль для работы слйдера фильтров к загружаемой фотографии
 const EFFECTS_FILTER = {
   chrome: {
     style: 'grayscale',
