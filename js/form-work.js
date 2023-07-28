@@ -1,4 +1,3 @@
-//модуль для работы с формой
 import {removeClass, addClass, isEscapeKey} from './util.js';
 import {checkForm, resetPristine} from './form-validation.js';
 import {filterHandlers, defaultSettings} from './form-slider.js';
