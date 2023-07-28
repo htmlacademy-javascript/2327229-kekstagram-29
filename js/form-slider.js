@@ -64,12 +64,28 @@ noUiSlider.create(slider, {
   connect: 'lower',
 });
 
-function defaultSettings(){
+const sliderHandler = (filter) => {
+  const sliderValue = document.querySelector('.effect-level__value');
+  slider.noUiSlider.updateOptions({
+    range: {
+      min: filter.min,
+      max: filter.max
+    },
+    start: filter.max,
+    step: filter.step,
+  });
+  slider.noUiSlider.on('update', () => {
+    sliderValue.value = slider.noUiSlider.get();
+    imagePreview.style.filter = `${filter.style}(${sliderValue.value}${filter.units})`;
+  });
+};
+
+const defaultSettings = () => {
   imgUploadEffectLevel.setAttribute('hidden', true);
   sliderHandler(EFFECTS_FILTER.default);
-}
+};
 
-function filterHandlers(){
+const filterHandlers = () => {
   radioButtonOriginal.addEventListener('click', () => {
     imgUploadEffectLevel.setAttribute('hidden', true);
     imagePreview.style.filter = 'none';
@@ -109,22 +125,6 @@ function filterHandlers(){
 
     sliderHandler(EFFECTS_FILTER.heat);
   });
-}
-
-function sliderHandler(filter){
-  const sliderValue = document.querySelector('.effect-level__value');
-  slider.noUiSlider.updateOptions({
-    range: {
-      min: filter.min,
-      max: filter.max
-    },
-    start: filter.max,
-    step: filter.step,
-  });
-  slider.noUiSlider.on('update', () => {
-    sliderValue.value = slider.noUiSlider.get();
-    imagePreview.style.filter = `${filter.style}(${sliderValue.value}${filter.units})`;
-  });
-}
+};
 
 export {filterHandlers, defaultSettings};

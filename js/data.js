@@ -3,7 +3,7 @@ import {getRandomInteger, getRandomArrayElement, createIdGenerator, IdGeneratorF
 const PHOTOS_NUMBER = 25; //количество фотографий, которое нужно сгенерировать
 
 //массив из описаний к фотографиям
-const DESCRIPTION = [
+const DESCRIPTIONS = [
   'Это я на море. Сейчас дома уже.',
   'Мой лююимый кот',
   'Безумно можно быть первым',
@@ -33,7 +33,7 @@ const DESCRIPTION = [
 ];
 
 //массив сообщений в комментариях
-const MESSAGE = [
+const MESSAGES = [
   'Всё отлично! ',
   'В целом всё неплохо. Но не всё. ',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально. ',
@@ -43,7 +43,7 @@ const MESSAGE = [
 ];
 
 //массив имён
-const NAME = [
+const NAMES = [
   'Артём',
   'Олег',
   'Томара',
@@ -54,12 +54,15 @@ const NAME = [
   'Максим',
 ];
 
+const generatePhotoId = createIdGenerator();
+const generatePhotoName = createIdGenerator();
+
 //конструктор текстового содержимого комментария
 const messageBuilder = () => {
   if (getRandomInteger(1,2) === 2) {
-    return getRandomArrayElement(MESSAGE) + getRandomArrayElement(MESSAGE);
+    return getRandomArrayElement(MESSAGES) + getRandomArrayElement(MESSAGES);
   }
-  return getRandomArrayElement(MESSAGE);
+  return getRandomArrayElement(MESSAGES);
 };
 
 //создатель комментария как объекта
@@ -67,17 +70,14 @@ const createComment = () => ({
   id: IdGeneratorFromRange(1, 5000),
   avatar: `img/avatar-${getRandomInteger(1,6)}.svg`,
   message: messageBuilder(),
-  name:  getRandomArrayElement(NAME),
+  name:  getRandomArrayElement(NAMES),
 });
-
-const generatePhotoId = createIdGenerator();
-const generatePhotoName = createIdGenerator();
 
 //генератор объектa фотографии
 const createPhotoDescription = () => ({
   id: generatePhotoId(),
   url: `photos/${generatePhotoName()}.jpg`,
-  description: getRandomArrayElement(DESCRIPTION),
+  description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInteger(15, 200),
   comments: Array.from({length: getRandomInteger(0,30)}, createComment),
 });

@@ -1,5 +1,4 @@
 import {showAlert} from './util.js';
-import {displaySuccessMessage, displayErrorMessage} from './message-boxes.js';
 
 const BASE_URL = 'https://29.javascript.pages.academy/kekstagram';
 const Route = {
@@ -33,12 +32,10 @@ const sendData = (body) => fetch(
   .then((response) => {
     if (!response.ok) {
       throw new Error();
-    } else {
-      displaySuccessMessage();
     }
   })
   .catch(() => {
-    throw displayErrorMessage();
+    throw new Error();
   });
 
 export {getData, sendData};
