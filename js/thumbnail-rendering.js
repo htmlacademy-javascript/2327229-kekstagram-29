@@ -7,7 +7,7 @@ const newItemThumbnail = thumbnailTemplate.querySelector('.picture');
 const thumbnailList = document.querySelector('.pictures');
 
 //получение информации о миниатюре
-function getThumbnail({ url, description, likes, comments }) {
+const getThumbnail = ({ url, description, likes, comments }) => {
   const thumbnail = newItemThumbnail.cloneNode(true);
 
   thumbnail.querySelector('.picture__img').src = url;
@@ -16,26 +16,10 @@ function getThumbnail({ url, description, likes, comments }) {
   thumbnail.querySelector('.picture__likes').textContent = likes;
 
   return thumbnail;
-}
-
-//отрисовка миниатюр по умолчанию
-function thumbnailRenderingDefault(photos) {
-  thumbnailRendering(sortedDefault(photos));
-}
-
-//отрисовка миниатюр по умолчанию
-function thumbnailRenderingRandom(photos) {
-  thumbnailRendering(sortRandom(photos));
-}
-
-//отрисовка миниатюр по умолчанию
-function thumbnailRenderingDiscussion(photos) {
-  const photosSorting = sortDiscussion(photos);
-  thumbnailRendering(photosSorting);
-}
+};
 
 //отрисовка миниатюры
-function thumbnailRendering(photosSorting) { //передаем сюда отсортированный массив и его отрисовываем
+const thumbnailRendering = (photosSorting) => { //передаем сюда отсортированный массив и его отрисовываем
   const thumbnailElements = document.querySelector('.pictures');
   const picElement = thumbnailElements.children;
   for(let i = (picElement.length - 1); i >= 2; i--){
@@ -46,10 +30,26 @@ function thumbnailRendering(photosSorting) { //передаем сюда отс�
   photosSorting.forEach((photo) => {
     const thumbnail = getThumbnail(photo);
     fragment.append(thumbnail);
-    addClickOpenHandler(thumbnail, photo.comments); //обработчик клика по миниатюре из другого модуля
+    addClickOpenHandler(thumbnail, photo); //обработчик клика по миниатюре из другого модуля
   });
   thumbnailList.append(fragment);
-}
+};
+
+//отрисовка миниатюр по умолчанию
+const thumbnailRenderingDefault = (photos) => {
+  thumbnailRendering(sortedDefault(photos));
+};
+
+//отрисовка 10 рандомных миниатюр
+const thumbnailRenderingRandom = (photos) => {
+  thumbnailRendering(sortRandom(photos));
+};
+
+//отрисовка миниатюр по убыванию количества комментариев
+const thumbnailRenderingDiscussion = (photos) => {
+  const photosSorting = sortDiscussion(photos);
+  thumbnailRendering(photosSorting);
+};
 
 
 export {thumbnailRenderingDefault, thumbnailRenderingRandom, thumbnailRenderingDiscussion};

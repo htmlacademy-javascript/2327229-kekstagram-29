@@ -54,6 +54,9 @@ const NAME = [
   'Максим',
 ];
 
+const generatePhotoId = createIdGenerator();
+const generatePhotoName = createIdGenerator();
+
 //конструктор текстового содержимого комментария
 const messageBuilder = () => {
   if (getRandomInteger(1,2) === 2) {
@@ -69,9 +72,6 @@ const createComment = () => ({
   message: messageBuilder(),
   name:  getRandomArrayElement(NAME),
 });
-
-const generatePhotoId = createIdGenerator();
-const generatePhotoName = createIdGenerator();
 
 //генератор объектa фотографии
 const createPhotoDescription = () => ({

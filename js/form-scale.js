@@ -1,8 +1,18 @@
 const scaleControl = document.querySelector('.scale__control--value');
 const imagePreview = document.querySelector('.img-upload__preview img');
 
+//получение числового значения масштаба картинки
+const getNumberValueScale = () => {
+  let numberValue = '';
+  for (let i = 0; i < scaleControl.value.length - 1; i++){
+    numberValue += scaleControl.value[i];
+  }
+  numberValue = Number(numberValue);
+  return numberValue;
+};
+
 //обработчик кнопки уменьшения масштаба изображения
-function controlSmallerHandler(){
+const controlSmallerHandler = () => {
   let numberScale = getNumberValueScale();
   if(numberScale >= 50){
     numberScale -= 25;
@@ -10,10 +20,10 @@ function controlSmallerHandler(){
     numberScale += '%';
     scaleControl.value = numberScale;
   }
-}
+};
 
 //обработчик кнопки увеличения масштаба изображения
-function controlBiggerHandler(){
+const controlBiggerHandler = () => {
   let numberScale = getNumberValueScale();
   if(numberScale <= 75){
     numberScale += 25;
@@ -25,16 +35,6 @@ function controlBiggerHandler(){
     numberScale += '%';
     scaleControl.value = numberScale;
   }
-}
-
-//получение числового значения масштаба картинки
-function getNumberValueScale(){
-  let numberValue = '';
-  for (let i = 0; i < scaleControl.value.length - 1; i++){
-    numberValue += scaleControl.value[i];
-  }
-  numberValue = Number(numberValue);
-  return numberValue;
-}
+};
 
 export {controlBiggerHandler, controlSmallerHandler};

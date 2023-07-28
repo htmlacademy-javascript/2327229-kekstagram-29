@@ -1,8 +1,9 @@
-import {removeClass, addClass, isEscapeKey, showAlert} from './util.js';
-import {checkForm} from './form-validation.js';
+import {removeClass, addClass, isEscapeKey} from './util.js';
+import {checkForm, resetPristine} from './form-validation.js';
 import {filterHandlers, defaultSettings} from './form-slider.js';
 import {controlBiggerHandler, controlSmallerHandler} from './form-scale.js';
 import {sendData} from './api.js';
+import {displaySuccessMessage, displayErrorMessage} from './message-boxes.js';
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
@@ -23,11 +24,76 @@ const imagePreview = document.querySelector('.img-upload__preview img');
 const radioButtonOriginal = document.querySelector('#effect-none');
 const form = document.querySelector('#upload-select-image');
 
-function windowNewImageHandlers(){
-  buttonImageLoading.addEventListener('change', addImageHandler); //добавление обработчика клика по кнопке загрузки изображения
+//обрабработчик по закрытию окна загрузки изображения
+const closeWindowLoadingImageHandler = () => {
+  addClass('.img-upload__overlay', 'hidden');
+  removeClass('body', 'modal-open');
+  buttonImageLoading.value = null;
+  inputTextHashtags.value = '';
+  textDescription.value = '';
+  defaultSettings(); //сброс настроек слайдера
+  resetPristine();
+
+  radioButtonOriginal.checked = true;
+  scaleControl.value = '100%';
+  imagePreview.style.transform = 'scale(1.0)';
+  imagePreview.style.filter = 'none';
+
+  document.removeEventListener('keydown', onDocumentKeydown);
+};
+
+//обрабочкик клика по Esc при закрытии окна
+function onDocumentKeydown(evt) {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeWindowLoadingImageHandler();
+  }
+}
+
+//обработчик проверки формы перед отправкой
+const buttonSubmitHandler = () => {
+  if (checkForm()){
+    buttonSubmitNewImage.removeAttribute('disabled');
+  } else {
+    buttonSubmitNewImage.setAttribute('disabled', true);
+  }
+};
+
+const blockSubmitButton = () => {
+  buttonSubmitNewImage.disabled = true;
+  buttonSubmitNewImage.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  buttonSubmitNewImage.disabled = false;
+  buttonSubmitNewImage.textContent = SubmitButtonText.IDLE;
+};
+
+//функция, обрабатывающая отправку формы
+const setUserFormSubmit = () => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = checkForm();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(new FormData(evt.target))
+        .then(resetPristine)
+        .then(closeWindowLoadingImageHandler)
+        .then(displaySuccessMessage)
+        .catch(() => {
+          displayErrorMessage();
+        })
+        .finally(unblockSubmitButton);
+    }
+  });
+};
+
+const windowNewImageHandlers = () => {
   buttonCloseWindowLoadingImage.addEventListener('click', closeWindowLoadingImageHandler); //добавдение обработчика клика по кнопке закрытия окна добавления изображения
 
-  inputTextHashtags.addEventListener('input', buttonSubmitHandler); //добавление обработчика дизейбла кнопри при невалидной форме
+  inputTextHashtags.addEventListener('input', buttonSubmitHandler); //добавление обработчика дизейбла кнопки при невалидном хэштеге
+  textDescription.addEventListener('input', buttonSubmitHandler); //добавление обработчика дизейбла кнопки при невалидном комментарии
 
   //удаление обработчика нажатия Esc при фокусе на полях ввода хэштега или комментария
   inputTextHashtags.addEventListener('focus', () => {
@@ -46,83 +112,19 @@ function windowNewImageHandlers(){
   buttonScaleControlSmaller.addEventListener('click', controlSmallerHandler); //добавление обработчика уменьшения масштаба
   buttonScaleControlBigger.addEventListener('click', controlBiggerHandler); //добавление обработчика увеличения масштаба
 
-  filterHandlers(); //обработчик добавления фильтов
+  filterHandlers(); //обработчик добавления фильтров
 
-  setUserFormSubmit(closeWindowLoadingImageHandler); //обработчик отправки формы
-}
-
-//функция, обрабатывающая отправку формы
-function setUserFormSubmit(onSuccess) {
-  form.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    const isValid = checkForm();
-    if (isValid) {
-      blockSubmitButton();
-      //document.removeEventListener('keydown', onDocumentKeydown);
-      sendData(new FormData(evt.target))
-        .then(onSuccess)
-        .catch((err) => {
-          showAlert(err.message);
-        })
-        .finally(unblockSubmitButton);
-    }
-  });
-}
-
-//проверить открытие окна сообщения
-//при открытии окна сообщения блокировать esc у окна новой фотки
-
-function blockSubmitButton() {
-  buttonSubmitNewImage.disabled = true;
-  buttonSubmitNewImage.textContent = SubmitButtonText.SENDING;
-}
-
-function unblockSubmitButton() {
-  buttonSubmitNewImage.disabled = false;
-  buttonSubmitNewImage.textContent = SubmitButtonText.IDLE;
-}
-
-//обработчик проверки формы перед отправкой
-function buttonSubmitHandler() {
-  if (checkForm()){
-    buttonSubmitNewImage.removeAttribute('disabled');
-  } else {
-    buttonSubmitNewImage.setAttribute('disabled', true);
-  }
-}
+  setUserFormSubmit(); //обработчик отправки формы
+};
 
 //обработчик добавления изображения
-function addImageHandler(){
+const addImageHandler = () => {
   removeClass('.img-upload__overlay', 'hidden');
   addClass('body', 'modal-open');
 
+  windowNewImageHandlers();
+
   document.addEventListener('keydown', onDocumentKeydown);
-}
+};
 
-//обрабработчик по закрытию окна загрузки изображения
-function closeWindowLoadingImageHandler(){
-  addClass('.img-upload__overlay', 'hidden');
-  removeClass('body', 'modal-open');
-  buttonImageLoading.value = null;
-  inputTextHashtags.value = '';
-  textDescription.value = '';
-  defaultSettings(); //сброс настроек слайдера
-
-  radioButtonOriginal.checked = true;
-  scaleControl.value = '100%';
-  imagePreview.style.transform = 'scale(1.0)';
-  imagePreview.style.filter = 'none';
-
-  document.removeEventListener('keydown', onDocumentKeydown);
-}
-
-//обрабочкик клика по Esc при закрытии окна
-function onDocumentKeydown(evt) {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    closeWindowLoadingImageHandler();
-  }
-}
-
-export {windowNewImageHandlers, onDocumentKeydown};
+export {addImageHandler, onDocumentKeydown};

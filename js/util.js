@@ -1,13 +1,13 @@
 const ALERT_SHOW_TIME = 5000;
 
 //генератор случайного числа в диапазоне
-function getRandomInteger (minNumber, maxNumber) {
+const getRandomInteger = (minNumber, maxNumber) => {
   const lower = Math.ceil(Math.min(Math.abs(minNumber), Math.abs(maxNumber)));
   const upper = Math.floor(Math.max(Math.abs(minNumber), Math.abs(maxNumber)));
   const result = Math.random() * (upper - lower + 1) + lower;
 
   return Math.floor(result);
-}
+};
 
 //функция получения рандомного элемента из массива
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
@@ -22,7 +22,7 @@ const createIdGenerator = () => {
 };
 
 //генератор id из диапазона
-function IdGeneratorFromRange (minNumber, maxNumber) {
+const IdGeneratorFromRange = (minNumber, maxNumber) => {
   const previousValues = [];
 
   let currentValue = getRandomInteger(minNumber, maxNumber);
@@ -33,45 +33,34 @@ function IdGeneratorFromRange (minNumber, maxNumber) {
   previousValues.push(currentValue);
 
   return currentValue;
-}
+};
 
 //удаление класса deleteClass у элемента с классом classElement
-function removeClass(classElement, deleteClass) {
+const removeClass = (classElement, deleteClass) => {
   const element = document.querySelector(classElement);
   element.classList.remove(deleteClass);
-}
+};
 
 //добавление класса newClass к элементу с классом classElement
-function addClass(classElement, newClass) {
+const addClass = (classElement, newClass) => {
   const element = document.querySelector(classElement);
   element.classList.add(newClass);
-}
-
-//функция получения картинки миниатюры
-function getImageAboutThumbnail(thumbnail) {
-  return thumbnail.querySelector('.picture__img').src;
-}
+};
 
 //функция получения количества лайков у миниатюры
-function getCountLikesAboutThumbnail(thumbnail) {
-  return thumbnail.querySelector('.picture__likes').textContent;
-}
+const getCountLikesAboutThumbnail = (thumbnail) => thumbnail.querySelector('.picture__likes').textContent;
 
 //функция получения количества комментариев у миниатюры
-function getCountCommentsAboutThumbnail(thumbnail) {
-  return thumbnail.querySelector('.picture__comments').textContent;
-}
+const getCountCommentsAboutThumbnail = (thumbnail) => thumbnail.querySelector('.picture__comments').textContent;
 
 //функция получения описания миниатюры
-function getDescriptionAboutThumbnail(thumbnail) {
-  return thumbnail.querySelector('.picture__img').alt;
-}
+const getDescriptionAboutThumbnail = (thumbnail) => thumbnail.querySelector('.picture__img').alt;
 
 //проверка нажата ли клавиша Escape
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 //формирование окна сообщения
-function showAlert(message) {
+const showAlert = (message) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '100';
   alertContainer.style.position = 'absolute';
@@ -94,16 +83,16 @@ function showAlert(message) {
   setTimeout(() => {
     alertContainer.remove();
   }, ALERT_SHOW_TIME);
-}
+};
 
 //устранение дребезга
-function debounce (callback, timeoutDelay) {
+const debounce = (callback, timeoutDelay) => {
   let timeoutId;
   return (...rest) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
-}
+};
 
-export {getRandomInteger, getRandomArrayElement, createIdGenerator, IdGeneratorFromRange, removeClass, addClass, getImageAboutThumbnail,
+export {getRandomInteger, getRandomArrayElement, createIdGenerator, IdGeneratorFromRange, removeClass, addClass,
   getCountLikesAboutThumbnail, getCountCommentsAboutThumbnail,getDescriptionAboutThumbnail,isEscapeKey, showAlert, debounce};

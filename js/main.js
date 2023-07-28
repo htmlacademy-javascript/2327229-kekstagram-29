@@ -1,11 +1,12 @@
 import {thumbnailRenderingDefault, thumbnailRenderingRandom, thumbnailRenderingDiscussion} from './thumbnail-rendering.js';
 import {getData} from './api.js';
-import {windowNewImageHandlers} from './form-work.js';
+import {addImageHandler} from './form-work.js';
 import {setDefaultClick, setRandomClick, setDiscussedClick, openFilterBox} from './filter-photo.js';
-import {debounce} from './util.js';
+import {debounce,showAlert} from './util.js';
 import './new-photo.js';
 
 const RERENDER_DELAY = 500;
+const buttonImageLoading = document.querySelector('.img-upload__input'); //кнопка загрузки изображения
 
 getData()
   .then((photos) => {
@@ -23,6 +24,10 @@ getData()
       () => thumbnailRenderingDiscussion(photos),
       RERENDER_DELAY
     ));
+  })
+  .catch((err) => {
+    showAlert(err.message);
   });
 
-windowNewImageHandlers();
+
+buttonImageLoading.addEventListener('change', addImageHandler); //добавление обработчика клика по кнопке загрузки изображения
