@@ -42,10 +42,7 @@ const chackRegularExpHashtag = (value) => {
 };
 
 //проверка на длину комментария
-const checkLengthComment = (value) => {
-  const check = value.length <= 140;
-  return check;
-};
+const checkLengthComment = (value) => value.length <= 140;
 
 pristine.addValidator(
   inputHashtags,
