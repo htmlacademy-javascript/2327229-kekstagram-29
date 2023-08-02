@@ -18,7 +18,7 @@ const deleteHendlers = () => {
 };
 
 //Обработчик закрытия окна полноразмерного изображения
-const addClickCloseHandler = () => {
+const fullImageCloseHandler = () => {
   addClass('.big-picture', 'hidden');
   removeClass('body', 'modal-open');
   commentsList.innerHTML = '';
@@ -52,16 +52,13 @@ const clickLoadCommentHandler = (comments) => {
 
   const displayedComments = document.querySelector('.count-showed-comments').textContent;
 
-  if(commentsLength >= Number(displayedComments)){ //нужно вместо этой константы поставить число, которое уже отображено
+  if(commentsLength >= Number(displayedComments)){ //вместо этой константы ставится число, которое уже отображено
     indexElementArrayComments = Number(displayedComments) - 1;
   } else {
     indexElementArrayComments = commentsLength;
   }
 
-  if((indexElementArrayComments + 1) === commentsLength || commentsLength <= 5) {
-    //
-  } else {
-
+  if((indexElementArrayComments + 1) !== commentsLength && commentsLength > 5) {
     if(indexElementArrayComments + 1 < commentsLength && commentsLength - indexElementArrayComments - 1 <= COUNT_COMMENTS_DEFAULT){
       //если еще не весь список отображен и количество неотображенных комментариев меньше или = 5, то
       for(let i = indexElementArrayComments + 1; i < commentsLength; i++){
@@ -121,11 +118,11 @@ const builderBigPictures = (item, photo) => {
   }
 
   //обработка клика закрытия полноразмерного окна
-  buttonClose.addEventListener('click', addClickCloseHandler);
+  buttonClose.addEventListener('click', fullImageCloseHandler);
 };
 
 //Обработчик клика по миниатюре
-const addClickOpenHandler = (item, photo) => {
+const fullImageOpenHandler = (item, photo) => {
   item.addEventListener('click', () => {
     removeClass('.big-picture', 'hidden');
     addClass('body', 'modal-open');
@@ -138,8 +135,8 @@ const addClickOpenHandler = (item, photo) => {
 function onDocumentKeydown(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    addClickCloseHandler();
+    fullImageCloseHandler();
   }
 }
 
-export {addClickOpenHandler};
+export {fullImageOpenHandler};
