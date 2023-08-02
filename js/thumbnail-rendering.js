@@ -1,4 +1,4 @@
-import {addClickOpenHandler} from './full-image.js';
+import {fullImageOpenHandler} from './full-image.js';
 import {sortedDefault, sortRandom, sortDiscussion} from './sorting.js';
 
 const thumbnailTemplate = document.querySelector('#picture').content;
@@ -30,7 +30,7 @@ const thumbnailRendering = (photosSorting) => {
   photosSorting.forEach((photo) => {
     const thumbnail = getThumbnail(photo);
     fragment.append(thumbnail);
-    addClickOpenHandler(thumbnail, photo); //обработчик клика по миниатюре из другого модуля
+    fullImageOpenHandler(thumbnail, photo); //обработчик клика по миниатюре из другого модуля
   });
   thumbnailList.append(fragment);
 };
